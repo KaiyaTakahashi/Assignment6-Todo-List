@@ -9,24 +9,22 @@ import UIKit
 
 class ToDoItemsTableViewController: UITableViewController, EditViewControllerDelegate {
     
-    var toDoItems: [[ToDoItem]] = [
-        [
-            ToDoItem(name: "Take a Walk", isDone: true),
-            ToDoItem(name: "Study Design pattern", isDone: true)
-        ],
-        [
-            ToDoItem(name: "Study iOS", isDone: true),
-            ToDoItem(name: "Update Resume", isDone: false)
-        ],
-        [
-            ToDoItem(name: "Watch Netflix", isDone: false)
-        ]
-    ]
+    var toDoItems: [[ToDoItem]] = [] {
+        didSet {
+            ToDoItem.saveToFile(toDoItems: toDoItems)
+        }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.leftBarButtonItem = editButtonItem
         tableView.allowsMultipleSelectionDuringEditing = true
+        
+        if let storedToDoItems = ToDoItem.loadFromFile() {
+            toDoItems = storedToDoItems
+        } else {
+            toDoItems = ToDoItem.sampleTodoItems
+        }
     }
 
     override func numberOfSections(in tableView: UITableView) -> Int {
